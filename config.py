@@ -67,7 +67,6 @@ Here are some references from the videos you have on this topic:\n\n{context}"""
 
 # S3 Configuration
 S3_BUCKET = "zoe-images"
-S3_BASE_URL = "https://zoe-images.s3.amazonaws.com"
 
 # Pinecone Configuration
 PINECONE_INDEX_NAME = "project-management"
