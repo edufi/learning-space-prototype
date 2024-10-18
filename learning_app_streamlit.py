@@ -13,6 +13,7 @@ from config import get_system_message_tutor  # Add this import
 
 # Set up S3 client
 s3_client = boto3.client('s3')
+s3_base_url = ""
 
 # Function to generate embeddings using OpenAI
 def generate_embedding(text: str, api_key: str) -> List[float]:
@@ -98,9 +99,10 @@ def get_context(user_message: str, chat_history: List[dict], openai_api_key: str
 
 # Function to upload the image to S3
 def upload_to_s3(file, file_name, bucket_name):
+    global s3_base_url
     try:
         s3_client.upload_fileobj(file, bucket_name, f"learning_app/{file_name}")
-        return f"{S3_BASE_URL}/learning_app/{file_name}"
+        return f"{s3_base_url}/learning_app/{file_name}"
     except NoCredentialsError:
         st.error("AWS credentials not available. Please configure your AWS credentials.")
         return None
@@ -183,8 +185,9 @@ with st.sidebar:
         st.session_state.current_objective = 0
     # Settings in a dropdown
     with st.expander("Settings"):
-        openai_api_key = st.text_input("Enter your OpenAI API key", type="password")
-        pinecone_api_key = st.text_input("Enter your Pinecone API key", type="password")
+        openai_api_key = st.text_input("Enter your OpenAI API key", type="password", value=st.secrets.get("OPENAI_API_KEY", ""))
+        pinecone_api_key = st.text_input("Enter your Pinecone API key", type="password", value=st.secrets.get("PINECONE_API_KEY", ""))
+        s3_base_url = st.text_input("Enter your S3 URL", value=st.secrets.get("S3_BASE_URL", ""))
         
         # Add numeric input for toggling objectives
         objective_toggle = st.number_input("Toggle Objective", min_value=0, max_value=len(objectives)-1, value=st.session_state.current_objective)
