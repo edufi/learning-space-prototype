@@ -10,13 +10,9 @@ from botocore.exceptions import NoCredentialsError
 import uuid
 from config import *  # Import all variables from config.py
 from config import get_system_message_tutor  # Add this import
-import os
 
-# Fetch secrets from Streamlit and set them as environment variables
-os.environ["LANGCHAIN_API_KEY"] = st.secrets["LANGCHAIN_API_KEY"]
-os.environ["LANGCHAIN_PROJECT"] = st.secrets["LANGCHAIN_PROJECT"]
-os.environ["LANGCHAIN_TRACING_V2"] = st.secrets["LANGCHAIN_TRACING_V2"]
-os.environ["LANGCHAIN_ENDPOINT"] = st.secrets["LANGCHAIN_ENDPOINT"]
+import agentops
+agentops.init(st.secrets.get("AGENTOPS_API_KEY", ""))
 
 # Set up S3 client
 s3_client = boto3.client('s3')
